@@ -18,6 +18,9 @@ class AocHarness(unittest.TestCase):
     filename = f'inputs/day{day:02d}.txt'
     if os.path.isfile(filename):
       return self.read_text_file_full_content(filename)
+    filename = f'../{filename}'
+    if os.path.isfile(filename):
+      return self.read_text_file_full_content(filename)
     response = requests.get(
       url=f'{self.base_url}/{day}/input',
       cookies=self.cookies
