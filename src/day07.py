@@ -27,13 +27,27 @@ class Equation:
   def __init__(self, result: int, operands: List[int]):
     self.result, self.operands = result, operands
 
-  def is_valid(self, *ops: Operator):
+  def is_solved_using(self, *allowed_operators: Operator):
+    '''
+    Checks if the equation can be solved with the given operators
+    :param allowed_operators: operators allowed to solve the equation
+    :return: true if the equation can be solved else false
+
+    Examples:
+      >>> Equation(3267, [81, 40, 27]).is_solved_using(add, mul)
+      True
+      >>> Equation(7290, [6, 8, 6, 15]).is_solved_using(add, mul)
+      False
+      >>> Equation(7290, [6, 8, 6, 15]).is_solved_using(add, mul, concat)
+      True
+    '''
     if len(self.operands) == 1:
       return self.operands[0] == self.result
     last_operand = self.operands[-1]
     remaining_operands = self.operands[:-1]
-    for op in ops:
-      if op(self.result, last_operand, lambda new_result: Equation(new_result, remaining_operands).is_valid(*ops)):
+    for operator in allowed_operators:
+      if operator(self.result, last_operand,
+                  lambda result: Equation(result, remaining_operands).is_solved_using(*allowed_operators)):
         return True
     return False
 
@@ -46,5 +60,5 @@ class Equations(List[Equation]):
   def __init__(self, input_text: str):
     super().__init__([Equation.parse(line) for line in input_text.strip().splitlines()])
 
-  def total_calibration_result(self, *ops: Operator):
-    return sum(equation.result for equation in self if equation.is_valid(*ops))
+  def total_calibration_result_using(self, *allowed_operators: Operator):
+    return sum(equation.result for equation in self if equation.is_solved_using(*allowed_operators))
