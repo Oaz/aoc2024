@@ -1,6 +1,7 @@
 import os
 import unittest
 import requests
+import timeit
 
 
 class AocHarness(unittest.TestCase):
@@ -19,7 +20,7 @@ class AocHarness(unittest.TestCase):
     if os.path.isfile(filename):
       return self.read_text_file_full_content(filename)
     filename = f'../{filename}'
-    if os.path.isfile(filename):
+    if os.path.isdir('..') and os.path.isfile(filename):
       return self.read_text_file_full_content(filename)
     response = requests.get(
       url=f'{self.base_url}/{day}/input',
@@ -39,3 +40,7 @@ class AocHarness(unittest.TestCase):
     with open(filename, 'w') as file:
       file.write(content)
     return content
+
+  @staticmethod
+  def time(statement: str, scope, iterations: int = 100):
+    return timeit.timeit(stmt=statement, globals=scope, number=iterations) / iterations
