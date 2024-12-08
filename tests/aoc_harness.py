@@ -16,11 +16,9 @@ class AocHarness(unittest.TestCase):
     self.base_url = f'https://adventofcode.com/{year}/day'
 
   def read_puzzle_input(self, day):
-    filename = f'inputs/day{day:02d}.txt'
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    filename = os.path.join(current_dir, f'../inputs/day{day:02d}.txt')
     if os.path.isfile(filename):
-      return self.read_text_file_full_content(filename)
-    filename = f'../{filename}'
-    if os.path.isdir('..') and os.path.isfile(filename):
       return self.read_text_file_full_content(filename)
     response = requests.get(
       url=f'{self.base_url}/{day}/input',
