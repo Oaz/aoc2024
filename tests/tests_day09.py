@@ -3,7 +3,7 @@ from tests.aoc_harness import AocHarness
 from src.day09 import *
 
 
-class TestsDay08(AocHarness):
+class TestsDay09(AocHarness):
 
   def setUp(self):
     self.example = DiskMap('2333133121414131402')
