@@ -3,6 +3,18 @@ from typing import Set, Tuple
 import networkx as nx
 
 
+class LazyProperty:
+  def __init__(self, func):
+    self.func = func
+
+  def __get__(self, instance, owner):
+    if instance is None:
+      return self
+    value = self.func(instance)
+    setattr(instance, self.func.__name__, value)
+    return value
+
+
 class Region:
   def __init__(self, label: str, component: int, graph: nx.Graph):
     self.label, self.id = label, f'{label}{component}'
@@ -11,11 +23,11 @@ class Region:
     self.perimeter = 4 * self.area - 2 * len(graph.edges)
     self.price = self.area * self.perimeter
 
-  @property
+  @LazyProperty
   def sides(self) -> int:
     return sum(self.corners(node) for node in self.nodes)
 
-  @property
+  @LazyProperty
   def bulk_price(self) -> int:
     return self.area * self.sides
 
@@ -54,12 +66,9 @@ class Garden:
       for row in input_text.strip().splitlines()
     ]
     self.width, self.height = len(self.rows[0]), len(self.rows)
-    self._regions = None
 
-  @property
+  @LazyProperty
   def regions(self) -> Set[Region]:
-    if self._regions is not None:
-      return self._regions
     graph = nx.Graph()
     for x in range(self.width):
       for y in range(self.height):
@@ -74,17 +83,16 @@ class Garden:
       for y in range(0, self.height)
     }
     sorted_nodes = sorted(graph.nodes(), key=lambda n: labels[n])
-    self._regions = {
+    return {
       Region(label, component_id, nx.Graph(graph.subgraph(component_nodes)))
       for label, group in groupby(sorted_nodes, key=lambda n: labels[n])
       for component_id, component_nodes in enumerate(nx.connected_components(graph.subgraph(group)))
     }
-    return self._regions
 
-  @property
+  @LazyProperty
   def price(self) -> int:
     return sum(region.price for region in self.regions)
 
-  @property
+  @LazyProperty
   def bulk_price(self) -> int:
     return sum(region.bulk_price for region in self.regions)

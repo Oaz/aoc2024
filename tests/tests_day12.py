@@ -148,8 +148,8 @@ AAAAAA
     self.assertEqual(1206, self.g3.bulk_price)
 
   def test_part2_puzzle(self):
-    foo = Garden(self.read_puzzle_input(day=12))
-    self.assertEqual(911750, foo.bulk_price)
+    g = Garden(self.read_puzzle_input(day=12))
+    self.assertEqual(911750, g.bulk_price)
 
 
 if __name__ == '__main__':
