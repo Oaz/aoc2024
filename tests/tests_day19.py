@@ -3,7 +3,7 @@ from tests.aoc_harness import AocHarness
 from src.day19 import *
 
 
-class TestsDay99(AocHarness):
+class TestsDay19(AocHarness):
 
   def setUp(self):
     self.example = Towels('''
