@@ -6,12 +6,15 @@ import networkx as nx
 class TopoMap:
   def __init__(self, input_text: str):
     lines = input_text.strip().splitlines()
+    self.x_size = len(lines[0])
+    self.y_size = len(lines)
     heights = {
       complex(x, y): int(char)
       for y, line in enumerate(lines)
       for x, char in enumerate(line)
       if char != '.'
     }
+    self.heights = heights
     self.nodes = {node for node in heights.keys()}
     self.starting = {node for node in heights.keys() if heights[node] == 0}
     self.ending = {node for node in heights.keys() if heights[node] == 9}
